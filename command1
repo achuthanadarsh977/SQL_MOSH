@@ -1,0 +1,573 @@
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Mon Aug 18 15:37:01 2025
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Enter user-name: system
+Enter password:
+Last Successful login time: Mon Aug 18 2025 11:51:51 +05:30
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      23000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+
+SQL> SELECT * FROM USERS;
+
+NAME                AGE PHONE_NUMBER
+------------ ---------- ---------------
+JOHN SAMUEL          23
+JACK DANIELS         30
+JACKIE CHAN          70
+RAM NAIR             40
+
+SQL> UPDATE USERS
+  2  SET PHONE NUMBER = '718-981-9999' WHERE ID = 1001;
+SET PHONE NUMBER = '718-981-9999' WHERE ID = 1001
+          *
+ERROR at line 2:
+ORA-00927: missing equal sign
+
+
+SQL> UPDATE USERS
+  2  SET PHONE_NUMBER = '718-981-9999' WHERE ID = 1001;
+SET PHONE_NUMBER = '718-981-9999' WHERE ID = 1001
+                                        *
+ERROR at line 2:
+ORA-00904: "ID": invalid identifier
+
+
+SQL> UPDATE USERS
+  2  SET PHONE_NUMBER = '718-981-9999' WHERE NAME = 'JOHN SAMUEL';
+
+1 row updated.
+
+SQL> UPDATE USERS
+  2  SET PHONE_NUMBER = '722-222-9222' WHERE NAME = 'RAM NAIR';
+
+1 row updated.
+
+SQL> UPDATE USERS
+  2  SET PHONE_NUMBER = '991-888-9992' WHERE NAME = 'RAM NAIR';
+
+1 row updated.
+
+SQL> SELECT * FROM USERS;
+
+NAME                AGE PHONE_NUMBER
+------------ ---------- ---------------
+JOHN SAMUEL          23 718-981-9999
+JACK DANIELS         30
+JACKIE CHAN          70
+RAM NAIR             40 991-888-9992
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      23000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+
+SQL> UPDATE USERS
+  2  SET PHONE_NUMBER = '999-777-8999' WHERE NAME = 'JACKIE CHAN';
+
+1 row updated.
+
+SQL> UPDATE USERS
+  2  SET PHONE_NUMBER = '887-766-9657' WHERE NAME = 'JACK DANIELS';
+
+1 row updated.
+
+SQL> SELECT * FROM USERS;
+
+NAME                AGE PHONE_NUMBER
+------------ ---------- ---------------
+JOHN SAMUEL          23 718-981-9999
+JACK DANIELS         30 887-766-9657
+JACKIE CHAN          70 999-777-8999
+RAM NAIR             40 991-888-9992
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      23000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+
+SQL> SELECT * FROM USERS JOIN CUSTOMERS ON CUSTOMERS.NAME = USERS.NAME;
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+JOHN SAMUEL          23 718-981-9999          1001 JOHN SAMUEL          23
+     23000 CHENNAI
+
+JACK DANIELS         30 887-766-9657          1002 JACK DANIELS         30
+     40000 AHMEDABAD
+
+JACKIE CHAN          70 999-777-8999          1003 JACKIE CHAN          70
+     50000 DELHI
+
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+RAM NAIR             40 991-888-9992          1004 RAM NAIR             40
+     45000 MUMBAI
+
+
+SQL> SELECT * FROM USERS INNER JOIN CUSTOMERS ON CUSTOMERS.NAME = USERS.NAME;
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+JOHN SAMUEL          23 718-981-9999          1001 JOHN SAMUEL          23
+     23000 CHENNAI
+
+JACK DANIELS         30 887-766-9657          1002 JACK DANIELS         30
+     40000 AHMEDABAD
+
+JACKIE CHAN          70 999-777-8999          1003 JACKIE CHAN          70
+     50000 DELHI
+
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+RAM NAIR             40 991-888-9992          1004 RAM NAIR             40
+     45000 MUMBAI
+
+
+SQL> SELECT * FROM USERS LEFT JOIN CUSTOMERS ON CUSTOMERS.NAME = USER.NAME;
+SELECT * FROM USERS LEFT JOIN CUSTOMERS ON CUSTOMERS.NAME = USER.NAME
+                                                                *
+ERROR at line 1:
+ORA-00933: SQL command not properly ended
+
+
+SQL> SELECT * FROM USERS LEFT JOIN CUSTOMERS ON CUSTOMERS.NAME = USERS.NAME;
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+JOHN SAMUEL          23 718-981-9999          1001 JOHN SAMUEL          23
+     23000 CHENNAI
+
+JACK DANIELS         30 887-766-9657          1002 JACK DANIELS         30
+     40000 AHMEDABAD
+
+JACKIE CHAN          70 999-777-8999          1003 JACKIE CHAN          70
+     50000 DELHI
+
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+RAM NAIR             40 991-888-9992          1004 RAM NAIR             40
+     45000 MUMBAI
+
+
+SQL> SELECT * FROM USERS RIGHT JOIN CUSTOMERS ON CUSTOMERS.NAME = USERS.NAME;
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+JOHN SAMUEL          23 718-981-9999          1001 JOHN SAMUEL          23
+     23000 CHENNAI
+
+JACK DANIELS         30 887-766-9657          1002 JACK DANIELS         30
+     40000 AHMEDABAD
+
+JACKIE CHAN          70 999-777-8999          1003 JACKIE CHAN          70
+     50000 DELHI
+
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+RAM NAIR             40 991-888-9992          1004 RAM NAIR             40
+     45000 MUMBAI
+
+
+SQL> SELECT * FROM USERS FULL JOIN CUSTOMERS ON CUSTOMERS.NAME = USERS.NAME;
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+JOHN SAMUEL          23 718-981-9999          1001 JOHN SAMUEL          23
+     23000 CHENNAI
+
+JACK DANIELS         30 887-766-9657          1002 JACK DANIELS         30
+     40000 AHMEDABAD
+
+JACKIE CHAN          70 999-777-8999          1003 JACKIE CHAN          70
+     50000 DELHI
+
+
+NAME                AGE PHONE_NUMBER            ID NAME                AGE
+------------ ---------- --------------- ---------- ------------ ----------
+    SALARY ADDRESS
+---------- ------------------
+RAM NAIR             40 991-888-9992          1004 RAM NAIR             40
+     45000 MUMBAI
+
+
+SQL> SELECT * FROM USERS OUTER JOIN CUSTOMERS ON CUSTOMERS.NAME = USERS.NAME;
+SELECT * FROM USERS OUTER JOIN CUSTOMERS ON CUSTOMERS.NAME = USERS.NAME
+                                                             *
+ERROR at line 1:
+ORA-00904: "USERS"."NAME": invalid identifier
+
+
+SQL> SELECT * FROM USERS WHERE NAME IN (SELECT NAME FROM CUSTOMERS WHERE SALARY>40000);
+
+NAME                AGE PHONE_NUMBER
+------------ ---------- ---------------
+JACKIE CHAN          70 999-777-8999
+RAM NAIR             40 991-888-9992
+
+SQL> SELECT * FROM CUSTOMERS WHERE AGE IN (SELECT AGE FROM USERS WHERE AGE>40);
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1003 JACKIE CHAN          70      50000 DELHI
+
+SQL> SELECT NAME , AGE , PHONE_NUMBER ,(SELECT SALARY FROM CUSTOMERS WHERE USERS.NAME = CUSTOMERS.NAME) FROM USERS WHERE AGE>50;
+
+NAME                AGE PHONE_NUMBER
+------------ ---------- ---------------
+(SELECTSALARYFROMCUSTOMERSWHEREUSERS.NAME=CUSTOMERS.NAME)
+---------------------------------------------------------
+JACKIE CHAN          70 999-777-8999
+                                                    50000
+
+
+SQL> SELECT NAME , AGE , PHONE_NUMBER ,(SELECT SALARY FROM CUSTOMERS WHERE USERS.NAME = CUSTOMERS.NAME) AS SALARY FROM USERS WHERE AGE>50;
+
+NAME                AGE PHONE_NUMBER        SALARY
+------------ ---------- --------------- ----------
+JACKIE CHAN          70 999-777-8999         50000
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      23000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+
+SQL> UPDATE CUSTOMERS
+  2  SET SALARY = SALARY + 7000
+  3  WHERE ID = 1001;
+
+1 row updated.
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      30000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+
+SQL> SELECT * FROM CUSTOMERS UNION SELECT * FROM USERS;
+SELECT * FROM CUSTOMERS UNION SELECT * FROM USERS
+*
+ERROR at line 1:
+ORA-01789: query block has incorrect number of result columns
+
+
+SQL> SELECT * FROM CUSTOMERS UNION SELECT * FROM USERS;
+SELECT * FROM CUSTOMERS UNION SELECT * FROM USERS
+*
+ERROR at line 1:
+ORA-01789: query block has incorrect number of result columns
+
+
+SQL> SELECT * FROM CUSTOMERS GROUP BY AGE;
+SELECT * FROM CUSTOMERS GROUP BY AGE
+       *
+ERROR at line 1:
+ORA-00979: not a GROUP BY expression
+
+
+SQL> SELECT * FROM CUSTOMERS ORDER BY AGE;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      30000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1004 RAM NAIR             40      45000 MUMBAI
+      1003 JACKIE CHAN          70      50000 DELHI
+
+SQL> SELECT * FROM CUSTOMERS ORDER BY AGE GROUP BY SALARY;
+SELECT * FROM CUSTOMERS ORDER BY AGE GROUP BY SALARY
+                                     *
+ERROR at line 1:
+ORA-00933: SQL command not properly ended
+
+
+SQL> SELECT * FROM CUSTOMERS GROUP BY NAME , AGE ORDER BY SALARY;
+SELECT * FROM CUSTOMERS GROUP BY NAME , AGE ORDER BY SALARY
+       *
+ERROR at line 1:
+ORA-00979: not a GROUP BY expression
+
+
+SQL> SELECT * FROM CUSTOMERS GROUP BY NAME , AGE ORDER BY SALARY DESC;
+SELECT * FROM CUSTOMERS GROUP BY NAME , AGE ORDER BY SALARY DESC
+       *
+ERROR at line 1:
+ORA-00979: not a GROUP BY expression
+
+
+SQL> SELECT SALARY , COUNT(*) AS TOTAL_CUSTOMERS FROM CUSTOMERS GROUP BY SALARY , AGE ORDER BY AGE;
+
+    SALARY TOTAL_CUSTOMERS
+---------- ---------------
+     30000               1
+     40000               1
+     45000               1
+     50000               1
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      30000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+
+SQL> SELECT ID , COUNT(*) AS TOTAL_CUSTOMERS FROM CUSTOMERS GROUP BY ADDRESS , AGE ORDER BY SALARY;
+SELECT ID , COUNT(*) AS TOTAL_CUSTOMERS FROM CUSTOMERS GROUP BY ADDRESS , AGE ORDER BY SALARY
+       *
+ERROR at line 1:
+ORA-00979: not a GROUP BY expression
+
+
+SQL> SELECT ID , COUNT(*) AS TOTAL_CUSTOMERS FROM CUSTOMERS GROUP BY ADDRESS , AGE ORDER BY SALARY DESC;
+SELECT ID , COUNT(*) AS TOTAL_CUSTOMERS FROM CUSTOMERS GROUP BY ADDRESS , AGE ORDER BY SALARY DESC
+       *
+ERROR at line 1:
+ORA-00979: not a GROUP BY expression
+
+
+SQL> SELECT ID , COUNT(*) AS TOTAL_CUSTOMERS FROM CUSTOMERS GROUP BY ADDRESS , AGE ORDER BY SALARY DESC;
+SELECT ID , COUNT(*) AS TOTAL_CUSTOMERS FROM CUSTOMERS GROUP BY ADDRESS , AGE ORDER BY SALARY DESC
+       *
+ERROR at line 1:
+ORA-00979: not a GROUP BY expression
+
+
+SQL> SELECT ID , COUNT(*) AS TOTAL_CUSTOMERS
+  2  FROM CUSTOMERS GROUP BY ADDRESS , AGE
+  3  ORDER BY SALARY DESC;
+SELECT ID , COUNT(*) AS TOTAL_CUSTOMERS
+       *
+ERROR at line 1:
+ORA-00979: not a GROUP BY expression
+
+
+SQL> SELECT ID , COUNT(*) AS TOTAL_CUSTOMERS
+  2  FROM CUSTOMERS GROUP BY ID , ADDRESS
+  3  ORDER BY ID ASC;
+
+        ID TOTAL_CUSTOMERS
+---------- ---------------
+      1001               1
+      1002               1
+      1003               1
+      1004               1
+
+SQL> SELECT MAX(SALARY) AS MAXIMUM_SALARY FROM CUSTOMERS ORDER BY SALARY DESC;
+
+MAXIMUM_SALARY
+--------------
+         50000
+
+SQL> SELECT MAX(SALARY) AS MAXIMUM_SALARY , AVG(SALARY) AS AVERAGE_SALARY , MIN(SALARY) AS MINIMUM_SALARY , COUNT(*) AS TOTAL_CUSTOMERS FROM CUSTOMERS ORDER BY SALARY DESC;
+
+MAXIMUM_SALARY AVERAGE_SALARY MINIMUM_SALARY TOTAL_CUSTOMERS
+-------------- -------------- -------------- ---------------
+         50000          41250          30000               4
+
+SQL> SELECT MAX(SALARY) AS MAXIMUM_SALARY , AVG(SALARY) AS AVERAGE_SALARY , MIN(SALARY) AS MINIMUM_SALARY ,SUM(SALARY) AS TOTAL_SALARY ,COUNT(*) AS TOTAL_CUSTOMERS FROM CUSTOMERS ORDER BY SALARY DESC;
+
+MAXIMUM_SALARY AVERAGE_SALARY MINIMUM_SALARY TOTAL_SALARY TOTAL_CUSTOMERS
+-------------- -------------- -------------- ------------ ---------------
+         50000          41250          30000       165000               4
+
+SQL> SELECT * FROM USERS;
+
+NAME                AGE PHONE_NUMBER
+------------ ---------- ---------------
+JOHN SAMUEL          23 718-981-9999
+JACK DANIELS         30 887-766-9657
+JACKIE CHAN          70 999-777-8999
+RAM NAIR             40 991-888-9992
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      30000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+
+SQL> SELECT NAME , COUNT(*) AS TOTAL_INDIVIDUALS FROM CUSTOMERS GROUP BY NAME , AGE ORDER NAME DESC;
+SELECT NAME , COUNT(*) AS TOTAL_INDIVIDUALS FROM CUSTOMERS GROUP BY NAME , AGE ORDER NAME DESC
+                                                                                     *
+ERROR at line 1:
+ORA-00924: missing BY keyword
+
+
+SQL> SELECT NAME , COUNT(*) AS TOTAL_INDIVIDUALS FROM CUSTOMERS GROUP BY NAME , AGE ORDER BY NAME DESC;
+
+NAME         TOTAL_INDIVIDUALS
+------------ -----------------
+RAM NAIR                     1
+JOHN SAMUEL                  1
+JACKIE CHAN                  1
+JACK DANIELS                 1
+
+SQL> SELECT NAME , COUNT(*) AS TOTAL_INDIVIDUALS FROM CUSTOMERS GROUP BY NAME , AGE ORDER BY NAME DESC HAVING COUNT(*)>2;
+SELECT NAME , COUNT(*) AS TOTAL_INDIVIDUALS FROM CUSTOMERS GROUP BY NAME , AGE ORDER BY NAME DESC HAVING COUNT(*)>2
+                                                                                                  *
+ERROR at line 1:
+ORA-00933: SQL command not properly ended
+
+
+SQL> SELECT NAME , COUNT(*) AS TOTAL_INDIVIDUALS FROM CUSTOMERS GROUP BY NAME , AGE HAVING COUNT(*)>2;
+
+no rows selected
+
+SQL> SELECT NAME , COUNT(*) AS TOTAL_INDIVIDUALS FROM CUSTOMERS GROUP BY NAME , AGE HAVING COUNT(*)=1;
+
+NAME         TOTAL_INDIVIDUALS
+------------ -----------------
+JOHN SAMUEL                  1
+JACK DANIELS                 1
+JACKIE CHAN                  1
+RAM NAIR                     1
+
+SQL> SELECT SALARY , COUNT(*) AS TOTAL_SALARY FROM CUSTOMERS GROUP BY SALARY , NAME HAVING AVG(SALARY)>15000;
+
+    SALARY TOTAL_SALARY
+---------- ------------
+     30000            1
+     40000            1
+     50000            1
+     45000            1
+
+SQL> SELECT SALARY , COUNT(*) AS TOTAL_SALARY FROM CUSTOMERS GROUP BY SALARY , NAME HAVING MIN(SALARY)>30000;
+
+    SALARY TOTAL_SALARY
+---------- ------------
+     40000            1
+     50000            1
+     45000            1
+
+SQL> CREATE TABLE SALES(
+  2  REGION VARCHAR(10) NOT NULL,
+  3  PRODUCT VARCHAR(10)  NOT NULL,
+  4  AMOUNT INT NOT NULL
+  5  );
+
+Table created.
+
+SQL> INSERT INTO SALES VALUES('East','Laptop',2000);
+
+1 row created.
+
+SQL> INSERT INTO SALES VALUES('East','Phone',1000);
+
+1 row created.
+
+SQL> INSERT INTO SALES VALUES('West','Computer',1500);
+
+1 row created.
+
+SQL> INSERT INTO SALES VALUES('West','Earphones',2500);
+
+1 row created.
+
+SQL> select * from sales;
+
+REGION     PRODUCT        AMOUNT
+---------- ---------- ----------
+East       Laptop           2000
+East       Phone            1000
+West       Computer         1500
+West       Earphones        2500
+
+SQL> SELECT REGION , SUM(AMOUNT) FROM SALES GROUP BY REGION , AMOUNT;
+
+REGION     SUM(AMOUNT)
+---------- -----------
+East              2000
+East              1000
+West              1500
+West              2500
+
+SQL> SELECT REGION , SUM(AMOUNT) AS TOTAL_AMOUNT FROM SALES GROUP BY REGION , AMOUNT ORDER BY REGION ASC;
+
+REGION     TOTAL_AMOUNT
+---------- ------------
+East               1000
+East               2000
+West               1500
+West               2500
+
+SQL> SELECT * FROM SALES GROUP BY ROLLUP(REGION,PRODUCT);
+SELECT * FROM SALES GROUP BY ROLLUP(REGION,PRODUCT)
+       *
+ERROR at line 1:
+ORA-00979: not a GROUP BY expression
+
+
+SQL> SELECT REGION , PRODUCT , COUNT(*) FROM SALES GROUP BY ROLLUP(REGION,PRODUCT);
+
+REGION     PRODUCT      COUNT(*)
+---------- ---------- ----------
+East       Laptop              1
+East       Phone               1
+West       Computer            1
+West       Earphones           1
+East                           2
+West                           2
+                               4
+
+7 rows selected.
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      30000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
