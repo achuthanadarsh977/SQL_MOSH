@@ -1,0 +1,121 @@
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Mon Oct 27 09:40:48 2025
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Enter user-name: system
+Enter password:
+Last Successful login time: Sun Oct 26 2025 20:03:42 +05:30
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      31000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+      1005 Jamie Dornin         34      40000 Kerala
+
+
+SQL> CREATE TABLE Student_Stored_procedure(
+  2  Student_ID INT NOT NULL,
+  3  Student_Name VARCHAR(12),
+  4  Student_Age INT NOT NULL,
+  5  Student_Marks INT NOT NULL
+  6  );
+
+Table created.
+
+SQL> INSERT INTO Student_Stored_procedure values(130,'John Abbott',23,90);
+
+1 row created.
+
+SQL> INSERT INTO Student_Stored_procedure values(120,'Jack Sampson',20,88);
+
+1 row created.
+
+SQL> INSERT INTO Student_Stored_procedure values(110,'Sam Anderson',21,89);
+
+1 row created.
+
+SQL> INSERT INTO Student_Stored_procedure values(100,'Danny Rand',19,87);
+
+1 row created.
+
+SQL> SELECT * FROM Student_Stored_procedure;
+
+STUDENT_ID STUDENT_NAME STUDENT_AGE STUDENT_MARKS
+---------- ------------ ----------- -------------
+       130 John Abbott           23            90
+       120 Jack Sampson          20            88
+       110 Sam Anderson          21            89
+       100 Danny Rand            19            87
+
+
+       100 Danny Rand            19            87
+
+SQL> CREATE OR REPLACE PROCEDURE getcustomerInfo(
+  2  p_name OUT varchar2,
+  3  p_age IN NUMBER
+  4  )
+  5  AS
+  6  BEGIN
+  7     SELECT STUDENT_NAME INTO p_name FROM student_stored_procedure where STUDENT_AGE = p_age;
+  8  END;
+  9  /
+
+Procedure created.
+SQL> CREATE OR REPLACE PROCEDURE my_choice(p_param1 IN number , p_param2 IN number) AS
+  2  p_param3 number;
+  3  BEGIN
+  4     p_param3 := p_param1+p_param2;
+  5     DBMS_OUTPUT.PUT_LINE('Sum Of Two Numbers:'|| p_param3);
+  6  END;
+  7  /
+
+Procedure created.
+
+SQL> EXEC my_choice(12,23);
+Sum Of Two Numbers:35
+
+PL/SQL procedure successfully completed.
+
+
+
+SQL> CREATE OR REPLACE PROCEDURE MARKS_STU(p_id IN number , p_name IN varchar2 , p_marks OUT number) AS
+  2  BEGIN
+  3     SELECT STUDENT_MARKS INTO p_marks FROM  student_stored_procedure WHERE STUDENT_NAME = p_name AND  STUDENT_ID = p_id AND ROWNUM = 1;
+  4  END;
+  5  /
+
+Procedure created.
+
+SQL> CREATE OR REPLACE PROCEDURE CUSTOMER_STU(C_ID IN number , C_NAME IN varchar2 , C_ADDRESS OUT varchar2) AS
+  2  BEGIN
+  3     SELECT ADDRESS INTO C_ADDRESS FROM CUSTOMERS WHERE NAME = C_NAME AND ID = C_ID;
+  4  END;
+  5  /
+
+Procedure created.
+
+
+SQL> DECLARE
+  2    v_address varchar2(100);
+  3  BEGIN
+  4     CUSTOMER_STU(1001,'JOHN SAMUEL' , v_address);
+  5     DBMS_OUTPUT.PUT_LINE('Customer address:'|| v_address);
+  6  END;
+  7  /
+Customer address:CHENNAI
+
+PL/SQL procedure successfully completed.
+
+
+
+
