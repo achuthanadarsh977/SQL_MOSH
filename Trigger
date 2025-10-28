@@ -1,0 +1,181 @@
+
+
+SQL> SELECT * FROM TOOLS;
+
+        ID NAME                                                    MARKS
+---------- -------------------------------------------------- ----------
+      1001 SAM JOHNSON                                                98
+      1002 JOHN NATHAN JONES                                          54
+      1003 JACK DANIELS                                               97
+      1004 ROSE DANVERS                                               78
+
+SQL> DROP TRIGGER student_insert_audit;
+
+Trigger dropped.
+
+SQL> CREATE TABLE TOOLS_AUDIT(
+  2  ID NUMBER,
+  3  ACTION VARCHAR2(20),
+  4  ACTION_TIME DATE
+  5  );
+
+Table created.
+
+SQL> CREATE OR REPLACE TRIGGER TOOLS_INSERT_AUDIT
+  2  AFTER INSERT ON TOOLS
+  3  FOR EACH ROW
+  4  BEGIN
+  5     INSERT INTO TOOLS_AUDIT(ID,ACTION,ACTION_TIME) VALUES(:NEW.ID , 'INSERT' , SYSDATE);
+  6  END;
+  7  /
+
+Trigger created.
+
+SQL> INSERT INTO TOOLS VALUES(1005,'NICK JONAS',85);
+
+1 row created.
+
+SQL> SELECT * FROM TOOLS_AUDIT;
+
+        ID ACTION               ACTION_TI
+---------- -------------------- ---------
+      1005 INSERT               28-OCT-25
+
+SQL> CREATE OR REPLACE TRIGGER AUDIT_TOOLS
+  2  BEFORE UPDATE ON TOOLS
+  3  FOR EACH ROW
+  4  BEGIN
+  5     INSERT INTO TOOLS_AUDIT(ID,ACTION,ACTION_TIME) VALUES(:NEW.ID , 'UPDATE',SYSDATE);
+  6  END;
+  7  /
+
+Trigger created.
+
+SQL> INSERT INTO TOOLS VALUES(1006,'ALAN SCOTT',87);
+
+1 row created.
+
+SQL> SELECT * FROM TOOLS_AUDIT;
+
+        ID ACTION               ACTION_TI
+---------- -------------------- ---------
+      1005 INSERT               28-OCT-25
+      1006 INSERT               28-OCT-25
+
+SQL> UPDATE TOOLS_AUDIT
+  2  SET ACTION = 'UPDATE' WHERE ID = 1006;
+
+1 row updated.
+
+SQL> SELECT * FROM TOOLS_AUDIT;
+
+        ID ACTION               ACTION_TI
+---------- -------------------- ---------
+      1005 INSERT               28-OCT-25
+      1006 UPDATE               28-OCT-25
+
+SQL> CREATE TABLE mark_history(
+  2  id NUMBER,
+  3  old_marks NUMBER,
+  4  new_marks NUMBER,
+  5  changed_date DATE
+  6  );
+
+Table created.
+
+SQL> CREATE OR REPLACE TRIGGER mark_update_log
+  2  BEFORE UPDATE OF MARKS
+  3  ON TOOLS
+  4  FOR EACH ROW
+  5  BEGIN
+  6     INSERT INTO mark_history(id,old_marks,new_marks,changed_date) VALUES(:OLD.ID,:OLD.MARKS,:NEW.MARKS,SYSDATE);
+  7  END;
+  8  /
+
+Trigger created.
+
+SQL> SELECT * FROM TOOLS;
+
+        ID NAME                                                    MARKS
+---------- -------------------------------------------------- ----------
+      1001 SAM JOHNSON                                                98
+      1002 JOHN NATHAN JONES                                          54
+      1003 JACK DANIELS                                               97
+      1004 ROSE DANVERS                                               78
+      1005 NICK JONAS                                                 85
+      1006 ALAN SCOTT                                                 87
+
+6 rows selected.
+
+SQL> UPDATE TOOLS
+  2  SET MARKS = 90 WHERE NAME = 'ROSE DANVERS';
+
+1 row updated.
+
+SQL> SELECT * FROM mark_history;
+
+        ID  OLD_MARKS  NEW_MARKS CHANGED_D
+---------- ---------- ---------- ---------
+      1004         78         90 28-OCT-25
+
+SQL> UPDATE TOOLS
+  2  SET MARKS = 91 WHERE ID = 1006;
+
+1 row updated.
+
+SQL> SELECT * FROM mark_history;
+
+        ID  OLD_MARKS  NEW_MARKS CHANGED_D
+---------- ---------- ---------- ---------
+      1004         78         90 28-OCT-25
+      1006         87         91 28-OCT-25
+
+SQL> CREATE OR REPLACE TRIGGER DELETE_MARK_AUDIT
+  2  AFTER INSERT ON TOOLS
+  3  FOR EACH ROW
+  4  BEGIN
+  5     INSERT INTO TOOLS_AUDIT(ID,ACTION,ACTION_TIME) VALUES(:NEW.ID,'DELETE',SYSDATE);
+  6  END;
+  7  /
+
+Trigger created.
+
+SQL> SELECT * FROM TOOLS;
+
+        ID NAME                                                    MARKS
+---------- -------------------------------------------------- ----------
+      1001 SAM JOHNSON                                                98
+      1002 JOHN NATHAN JONES                                          54
+      1003 JACK DANIELS                                               97
+      1004 ROSE DANVERS                                               90
+      1005 NICK JONAS                                                 85
+      1006 ALAN SCOTT                                                 91
+
+6 rows selected.
+
+SQL> INSERT INTO TOOLS VALUES(1007,'JACK DAVIS',84);
+
+1 row created.
+
+SQL> SELECT * FROM TOOLS_AUDIT;
+
+        ID ACTION               ACTION_TI
+---------- -------------------- ---------
+      1005 INSERT               28-OCT-25
+      1006 UPDATE               28-OCT-25
+      1004 UPDATE               28-OCT-25
+      1006 UPDATE               28-OCT-25
+      1007 DELETE               28-OCT-25
+      1007 INSERT               28-OCT-25
+
+6 rows selected.
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      31000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+      1005 Jamie Dornin         34      40000 Kerala
