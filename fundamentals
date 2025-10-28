@@ -1,0 +1,81 @@
+SQL> DECLARE
+  2     a number;
+  3     b number;
+  4     c number;
+  5  BEGIN
+  6     c:=a+b;
+  7     DBMS_OUTPUT.PUT_LINE('Sum Of Two Number:'|| c);
+  8  END;
+  9  /
+Sum Of Two Number:
+
+PL/SQL procedure successfully completed.
+
+SQL> DECLARE
+  2       a number;
+  3       b number;
+  4       c number;
+  5  BEGIN
+  6     a:=34;
+  7     b:=14;
+  8     c:=a+b;
+  9     DBMS_OUTPUT.PUT_LINE('Sum Of Two Number:'|| c);
+ 10  END;
+ 11  /
+Sum Of Two Number:48
+
+PL/SQL procedure successfully completed.
+
+SQL> DECLARE
+  2       a number;
+  3       b number;
+  4  BEGIN
+  5     DBMS_OUTPUT.PUT_LINE('Sum Of Two Numbers:'||(a+b));
+  6     DBMS_OUTPUT.PUT_LINE('Product Of Two Numbers:'||(a*b));
+  7     DBMS_OUTPUT.PUT_LINE('Difference Of Two Numbers:'||(a-b));
+  8     a:=34;
+  9     b:=14;
+ 10  END;
+ 11  /
+Sum Of Two Numbers:
+Product Of Two Numbers:
+Difference Of Two Numbers:
+
+PL/SQL procedure successfully completed.
+
+SQL> DECLARE
+  2     a number;
+  3     b number;
+  4  BEGIN
+  5     a:=34;
+  6     b:=14;
+  7     DBMS_OUTPUT.PUT_LINE('Sum Of Two Numbers:'||(a+b));
+  8     DBMS_OUTPUT.PUT_LINE('Product Of Two Numbers:'||(a*b));
+  9     DBMS_OUTPUT.PUT_LINE('Difference Of Two Numbers:'||(a-b));
+ 10  END;
+ 11  /
+Sum Of Two Numbers:48
+Product Of Two Numbers:476
+Difference Of Two Numbers:20
+
+PL/SQL procedure successfully completed.
+
+SQL> DECLARE
+  2     a number(4):= 100;
+  3  BEGIN
+  4     IF (a = 100) THEN
+  5        DBMS_OUTPUT.PUT_LINE('Value of a is equal to 100');
+  6     ELSIF (a = 20) THEN
+  7          DBMS_OUTPUT.PUT_LINE('Value of a is less than 100');
+  8     ELSIF (a = 300) THEN
+  9           DBMS_OUTPUT.PUT_LINE('Value of a is more than 100');
+ 10     ELSE
+ 11        DBMS_OUTPUT.PUT_LINE('Niether of the values matching');
+ 12     END IF;
+ 13     DBMS_OUTPUT.PUT_LINE('Exact value of a is'||a);
+ 14  END;
+ 15  /
+Value of a is equal to 100
+Exact value of a is100
+
+PL/SQL procedure successfully completed.
