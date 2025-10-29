@@ -1,0 +1,198 @@
+SQL> DECLARE
+  2      grade char(1):= 'A';
+  3  BEGIN
+  4     CASE grade
+  5          when 'A' then dbms_output.put_line('Excellent');
+  6          when 'B' then dbms_output.put_line('Very good');
+  7          when 'C' then dbms_output.put_line('Average');
+  8          when 'D' then dbms_output.put_line('Below Average');
+  9          when 'E' then dbms_output.put_line('Fail');
+ 10          else dbms_output.put_line('Error!Not a valid grade');
+ 11     END CASE;
+ 12  END;
+ 13  /
+
+PL/SQL procedure successfully completed.
+
+SQL> SET SERVEROUTPUT ON;
+SQL> DECLARE
+  2       a number(3) := 100;
+  3  BEGIN
+  4     IF(a < 20) THEN
+  5          DBMS_OUTPUT.PUT_LINE('Value is less than 20');
+  6     ELSE
+  7          DBMS_OUTPUT.PUT_LINE(Value is not less than 20');
+  8     END IF;
+  9     DBMS_OUTPUT.PUT_LINE('Exact value of a:'|| a);
+ 10  END;
+ 11  /
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> DECLARE
+  2      a number(3) := 100;
+  3  BEGIN
+  4      IF(a < 20) THEN
+  5           DBMS_OUTPUT.PUT_LINE('Value is less than 20');
+  6      ELSE
+  7          DBMS_OUTPUT.PUT_LINE('Value is not less than 20');
+  8      END IF;
+  9      DBMS_OUTPUT.PUT_LINE('Exact value of a:'|| a);
+ 10  END;
+ 11  /
+Value is not less than 20
+Exact value of a:100
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      31000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+      1005 Jamie Dornin         34      40000 Kerala
+
+SQL> CREATE OR REPLACE FUNCTION totalcustomers
+  2  RETURN NUMBER IS
+  3  total number(2) := 0
+  4  BEGIN
+  5    SELECT COUNT(*) INTO total FROM CUSTOMERS;
+  6    RETURN total;
+  7  END;
+  8  /
+
+Warning: Function created with compilation errors.
+
+SQL> CREATE OR REPLACE FUNCTION totalcustomers
+  2  RETURN NUMBER IS
+  3  total number(2) := 0;
+  4  BEGIN
+  5      SELECT COUNT(*) INTO total FROM CUSTOMERS;
+  6      RETURN total;
+  7  END;
+  8  /
+
+Function created.
+
+SQL> DECLARE
+  2    v number(2);
+  3  BEGIN
+  4     v :=  totalcustomers();
+  5     DBMS_OUTPUT.PUT_LINE('Total Customers:'||v);
+  6  END;
+  7  /
+Total Customers:5
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT * FROM TOOLS;
+
+        ID NAME                                                    MARKS
+---------- -------------------------------------------------- ----------
+      1001 SAM JOHNSON                                                98
+      1002 JOHN NATHAN JONES                                          54
+      1003 JACK DANIELS                                               97
+      1004 ROSE DANVERS                                               90
+      1005 NICK JONAS                                                 85
+      1006 ALAN SCOTT                                                 91
+      1007 JACK DAVIS                                                 84
+
+7 rows selected.
+
+SQL> CREATE OR REPLACE FUNCTION totaltools
+  2  RETURN NUMBER IS
+  3  toll number(2);
+  4  BEGIN
+  5     SELECT COUNT(*) INTO toll FROM TOOLS;
+  6  END;
+  7  /
+
+Function created.
+
+SQL> DECLARE
+  2      l number(2);
+  3  BEGIN
+  4     l = totaltools();
+  5     dbms_output.put_line('Total Tools:'||l);
+  6  END;
+  7  /
+   l = totaltools();
+     *
+ERROR at line 4:
+ORA-06550: line 4, column 6:
+PLS-00103: Encountered the symbol "=" when expecting one of the following:
+:= . ( @ % ;
+ORA-06550: line 5, column 4:
+PLS-00103: Encountered the symbol "DBMS_OUTPUT"
+ORA-06550: line 5, column 43:
+PLS-00103: Encountered the symbol ";" when expecting one of the following:
+. ( , * % & - + / at mod remainder rem <an identifier>
+<a double-quoted delimited-identifier> <an exponent (**)> as
+from into || multiset bulk
+
+
+SQL> DECLARE
+  2      l number(2);
+  3  BEGIN
+  4     l := totaltools();
+  5     dbms_output.put_line('Total Tools:'||l);
+  6  END;
+  7  /
+DECLARE
+*
+ERROR at line 1:
+ORA-06503: PL/SQL: Function returned without value
+ORA-06512: at "SYSTEM.TOTALTOOLS", line 6
+ORA-06512: at line 4
+
+
+SQL> CREATE OR REPLACE FUNCTION totaltools
+  2  RETURN NUMBER IS
+  3  toll number(2);
+  4  BEGIN
+  5     SELECT COUNT(*) INTO toll FROM TOOLS;
+  6  END;
+  7  /
+
+Function created.
+
+SQL> CREATE OR REPLACE FUNCTION totaltools
+  2  RETURN NUMBER IS
+  3  toll number(2);
+  4  BEGIN
+  5     SELECT COUNT(*) INTO toll FROM TOOLS;
+  6     RETURN toll;
+  7  END;
+  8  /
+
+Function created.
+
+SQL> DECLARE
+  2      l number(2);
+  3  BEGIN
+  4     l = totaltools()
+  5     dbms_output.put_line('Total tools:'|| l);
+  6  END;
+  7  /
+   l = totaltools()
+     *
+ERROR at line 4:
+ORA-06550: line 4, column 6:
+PLS-00103: Encountered the symbol "=" when expecting one of the following:
+:= . ( @ % ;
+
+
+SQL> DECLARE
+  2      l number(2);
+  3  BEGIN
+  4      l := totaltools();
+  5      dbms_output.put_line('Total tools:'|| l);
+  6  END;
+  7  /
+Total tools:7
+
+PL/SQL procedure successfully completed.
