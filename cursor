@@ -1,0 +1,110 @@
+
+Enter user-name: system
+Enter password:
+Last Successful login time: Wed Oct 29 2025 11:32:17 +05:30
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      31000 CHENNAI
+      1002 JACK DANIELS         30      40000 AHMEDABAD
+      1003 JACKIE CHAN          70      50000 DELHI
+      1004 RAM NAIR             40      45000 MUMBAI
+      1005 Jamie Dornin         34      40000 Kerala
+
+SQL> DECLARE
+  2     total_rows number(2);
+  3  BEGIN
+  4     UPDATE CUSTOMERS SET SALARY = SALARY+500;
+  5     IF SQL%NOTFOUND THEN
+  6           DBMS_OUTPUT.PUT_LINE('No Customer Selected!');
+  7     ELSIF SQL%FOUND THEN
+  8           total_rows := sql%rowcount;
+  9           DBMS_OUTPUT.PUT_LINE(total_rows || 'customers selected');
+ 10     END IF;
+ 11  END;
+ 12  /
+DECLARE
+*
+ERROR at line 1:
+ORA-04091: table SYSTEM.CUSTOMERS is mutating, trigger/function may not see it
+ORA-06512: at "SYSTEM.TR_TEMPLATE_VIEW", line 2
+ORA-04088: error during execution of trigger 'SYSTEM.TR_TEMPLATE_VIEW'
+ORA-06512: at line 4
+
+
+SQL> DROP TRIGGER TR_TEMPLATE_VIEW;
+
+Trigger dropped.
+
+SQL> DECLARE
+  2     total_rows number(2);
+  3  BEGIN
+  4     UPDATE CUSTOMERS SET SALARY = SALARY + 500;
+  5     IF SQL%NOTFOUND THEN
+  6             DBMS_OUTPUT.PUT_LINE('No Customer Selected!');
+  7     ELSIF SQL%FOUND THEN
+  8           total_rows := sql%rowcount;
+  9           DBMS_OUTPUT.PUT_LINE(total_rows || 'customers selected');
+ 10     END IF;
+ 11  END;
+ 12  /
+
+PL/SQL procedure successfully completed.
+
+SQL> SET SERVEROUTPUT ON;
+SQL> SELECT * FROM CUSTOMERS;
+
+        ID NAME                AGE     SALARY ADDRESS
+---------- ------------ ---------- ---------- ------------------
+      1001 JOHN SAMUEL          23      31500 CHENNAI
+      1002 JACK DANIELS         30      40500 AHMEDABAD
+      1003 JACKIE CHAN          70      50500 DELHI
+      1004 RAM NAIR             40      45500 MUMBAI
+      1005 Jamie Dornin         34      40500 Kerala
+
+SQL> DECLARE
+  2     total number(2);
+  3  BEGIN
+  4     UPDATE CUSTOMERS SET SALARY = SALARY - 500;
+  5     IF SQL%NOTFOUND THEN
+  6            DBMS_OUTPUT.PUT_LINE('No Customers Selected');
+  7     ELSIF SQL%FOUND THEN
+  8           total_rows := sql%rowcount;
+  9           DBMS_OUTPUT.PUT_LINE(total_rows || 'customers selected');
+ 10     END IF;
+ 11  END;
+ 12  /
+         total_rows := sql%rowcount;
+         *
+ERROR at line 8:
+ORA-06550: line 8, column 10:
+PLS-00201: identifier 'TOTAL_ROWS' must be declared
+ORA-06550: line 8, column 10:
+PL/SQL: Statement ignored
+ORA-06550: line 9, column 31:
+PLS-00201: identifier 'TOTAL_ROWS' must be declared
+ORA-06550: line 9, column 10:
+PL/SQL: Statement ignored
+
+
+SQL> DECLARE
+  2     total number(2);
+  3  BEGIN
+  4     UPDATE CUSTOMERS SET SALARY = SALARY - 500;
+  5     IF SQL%NOTFOUND THEN
+  6         DBMS_OUTPUT.PUT_LINE('No Customers Selected');
+  7     ELSIF SQL%FOUND THEN
+  8           total := sql%rowcount;
+  9           DBMS_OUTPUT.PUT_LINE(total || 'customers selected');
+ 10     END IF;
+ 11  END;
+ 12  /
+5customers selected
+
+PL/SQL procedure successfully completed.
