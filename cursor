@@ -104,6 +104,34 @@ SQL> DECLARE
   9           DBMS_OUTPUT.PUT_LINE(total || 'customers selected');
  10     END IF;
  11  END;
+
+
+SQL> DECLARE
+  2      t_id tools.id%type;
+  3      t_name tools.name%type;
+  4      t_marks tools.marks%type;
+  5      CURSOR t_tools is
+  6             SELECT id,name, marks FROM tools;
+  7  BEGIN
+  8     OPEN t_tools;
+  9     LOOP
+ 10     FETCH t_tools INTO t_id , t_name , t_marks;
+ 11           EXIT WHEN t_tools%notfound;
+ 12           DBMS_OUTPUT.PUT_LINE(t_id ||''||t_name||''||t_marks);
+ 13     END LOOP;
+ 14     CLOSE t_tools;
+ 15  END;
+ 16  /
+1001SAM JOHNSON98
+1002JOHN NATHAN JONES54
+1003JACK DANIELS97
+1004ROSE DANVERS90
+1005NICK JONAS85
+1006ALAN SCOTT91
+1007JACK DAVIS84
+
+PL/SQL procedure successfully completed.
+
  12  /
 5customers selected
 
