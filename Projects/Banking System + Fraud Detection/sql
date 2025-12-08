@@ -1,0 +1,244 @@
+
+mysql> CREATE DATABASE BANK_FRAUD;
+Query OK, 1 row affected (0.157 sec)
+
+mysql> USE BANK_FRAUD
+Database changed
+mysql> CREATE TABLE CUSTOMERS(
+    -> customer_id INT PRIMARY KEY,
+    -> fullname VARCHAR(20) NOT NULL,
+    -> email VARCHAR(120) NOT NULL,
+    -> phone VARCHAR(11) NOT NULL,
+    -> created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    -> );
+Query OK, 0 rows affected (0.489 sec)
+
+mysql> CREATE TABLE ACCOUNTS(
+    -> account_id INT NOT NULL PRIMARY KEY,
+    -> customer_id INT NOT NULL,
+    -> account_number CHAR(16) NOT NULL,
+    -> account_type ENUM('checking','savings','credit') NOT NULL DEFAULT 'checking',
+    ->  currency CHAR(3) NOT NULL DEFAULT 'USD',
+    ->  balance DECIMAL(18,2) NOT NULL DEFAULT 0.00,
+    -> status ENUM('active','frozen','closed') NOT NULL DEFAULT 'active',
+    ->  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -> FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    -> );
+Query OK, 0 rows affected (0.553 sec)
+
+
+
+mysql> CREATE TABLE transactions(
+    -> txn_id INT NOT NULL,
+    -> account_id INT NOT NULL,
+    -> txn_type VARCHAR(50) NOT NULL,
+    -> amount INT NOT NULL,
+    -> location VARCHAR(100) NOT NULL,
+    ->  FOREIGN KEY (account_id) REFERENCES ACCOUNTS(account_id)
+    -> );
+Query OK, 0 rows affected (0.558 sec)
+
+mysql> DESC CUSTOMERS;
++-------------+--------------+------+-----+-------------------+-------------------+
+| Field       | Type         | Null | Key | Default           | Extra             |
++-------------+--------------+------+-----+-------------------+-------------------+
+| customer_id | int          | NO   | PRI | NULL              |                   |
+| fullname    | varchar(20)  | NO   |     | NULL              |                   |
+| email       | varchar(120) | NO   |     | NULL              |                   |
+| phone       | varchar(11)  | NO   |     | NULL              |                   |
+| created_at  | timestamp    | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++-------------+--------------+------+-----+-------------------+-------------------+
+5 rows in set (0.340 sec)
+
+mysql> DESC ACCOUNTS;
++----------------+-------------------------------------+------+-----+-------------------+-------------------+
+| Field          | Type                                | Null | Key | Default           | Extra             |
++----------------+-------------------------------------+------+-----+-------------------+-------------------+
+| account_id     | int                                 | NO   | PRI | NULL              |                   |
+| customer_id    | int                                 | NO   | MUL | NULL              |                   |
+| account_number | char(16)                            | NO   |     | NULL              |                   |
+| account_type   | enum('checking','savings','credit') | NO   |     | checking          |                   |
+| currency       | char(3)                             | NO   |     | USD               |                   |
+| balance        | decimal(18,2)                       | NO   |     | 0.00              |                   |
+| status         | enum('active','frozen','closed')    | NO   |     | active            |                   |
+| created_at     | timestamp                           | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++----------------+-------------------------------------+------+-----+-------------------+-------------------+
+8 rows in set (0.040 sec)
+
+mysql> DESC transactions;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| txn_id     | int          | NO   |     | NULL    |       |
+| account_id | int          | NO   | MUL | NULL    |       |
+| txn_type   | varchar(50)  | NO   |     | NULL    |       |
+| amount     | int          | NO   |     | NULL    |       |
+| location   | varchar(100) | NO   |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+5 rows in set (0.033 sec)
+
+
+
+mysql> CREATE TABLE fraud_alerts(
+    -> alert_id INT PRIMARY KEY,
+    -> txn_id INT NOT NULL,
+    -> alert_type VARCHAR(50),
+    -> risk_score INT NOT NULL,
+    -> FOREIGN KEY (txn_id) REFERENCES transactions(txn_id)
+    -> );
+Query OK, 0 rows affected (0.454 sec)
+
+
+
+mysql> DESC fraud_alerts;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| alert_id   | int         | NO   | PRI | NULL    |       |
+| txn_id     | int         | NO   | MUL | NULL    |       |
+| alert_type | varchar(50) | YES  |     | NULL    |       |
+| risk_score | int         | NO   |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.040 sec)
+
+
+
+
+mysql> INSERT INTO CUSTOMERS VALUES(1001,'DIVYA RANA','divyarana@gmail.com','7550277362', CURRENT_TIMESTAMP);
+Query OK, 1 row affected (0.090 sec)
+
+mysql> SELECT * FROM CUSTOMERS;
++-------------+------------+---------------------+------------+---------------------+
+| customer_id | fullname   | email               | phone      | created_at          |
++-------------+------------+---------------------+------------+---------------------+
+|        1001 | DIVYA RANA | divyarana@gmail.com | 7550277362 | 2025-12-08 17:06:30 |
++-------------+------------+---------------------+------------+---------------------+
+1 row in set (0.030 sec)
+
+mysql> INSERT INTO CUSTOMERS VALUES(1002,'JASMINE SINGH','jasminesingh@gmail.com','7660344543', '2024-12-11 19:20:34');
+Query OK, 1 row affected (0.042 sec)
+
+mysql> INSERT INTO CUSTOMERS VALUES(1003,'PRAVEEN PILLAI','praveenpillai@gmail.com','7339545708', '2023-11-01 18:17:17');
+Query OK, 1 row affected (0.055 sec)
+
+mysql> INSERT INTO CUSTOMERS VALUES(1004,'MASON THOMAS','masonthomas@gmail.com','8438503884', '2022-10-09 17:16:16');
+Query OK, 1 row affected (0.062 sec)
+
+mysql> SELECT * FROM CUSTOMERS;
++-------------+----------------+-------------------------+------------+---------------------+
+| customer_id | fullname       | email                   | phone      | created_at          |
++-------------+----------------+-------------------------+------------+---------------------+
+|        1001 | DIVYA RANA     | divyarana@gmail.com     | 7550277362 | 2025-12-08 17:06:30 |
+|        1002 | JASMINE SINGH  | jasminesingh@gmail.com  | 7660344543 | 2024-12-11 19:20:34 |
+|        1003 | PRAVEEN PILLAI | praveenpillai@gmail.com | 7339545708 | 2023-11-01 18:17:17 |
+|        1004 | MASON THOMAS   | masonthomas@gmail.com   | 8438503884 | 2022-10-09 17:16:16 |
++-------------+----------------+-------------------------+------------+---------------------+
+4 rows in set (0.012 sec)
+
+mysql> INSERT INTO CUSTOMERS VALUES(1005 , 'SANYA NAIR','sanyanair@gmail.com','7440355671','2024-10-10 18:20:34');
+Query OK, 1 row affected (0.061 sec)
+
+mysql> SELECT * FROM CUSTOMERS;
++-------------+----------------+-------------------------+------------+---------------------+
+| customer_id | fullname       | email                   | phone      | created_at          |
++-------------+----------------+-------------------------+------------+---------------------+
+|        1001 | DIVYA RANA     | divyarana@gmail.com     | 7550277362 | 2025-12-08 17:06:30 |
+|        1002 | JASMINE SINGH  | jasminesingh@gmail.com  | 7660344543 | 2024-12-11 19:20:34 |
+|        1003 | PRAVEEN PILLAI | praveenpillai@gmail.com | 7339545708 | 2023-11-01 18:17:17 |
+|        1004 | MASON THOMAS   | masonthomas@gmail.com   | 8438503884 | 2022-10-09 17:16:16 |
+|        1005 | SANYA NAIR     | sanyanair@gmail.com     | 7440355671 | 2024-10-10 18:20:34 |
++-------------+----------------+-------------------------+------------+---------------------+
+5 rows in set (0.009 sec)
+
+
+mysql> INSERT INTO ACCOUNTS VALUES(101,1001,'Account_1','savings','INR',20000.43,'active','2025-12-08 17:06:30');
+Query OK, 1 row affected (0.131 sec)
+
+mysql> INSERT INTO ACCOUNTS VALUES(102,1002,'Account_2','checking','USD',31233.33,'closed','2024-12-11 19:20:34');
+Query OK, 1 row affected (0.054 sec)
+
+mysql> INSERT INTO ACCOUNTS VALUES(103,1003,'Account_3','credit','EUR',40233.43,'frozen','2023-11-01 18:17:17');
+Query OK, 1 row affected (0.052 sec)
+
+mysql> SELECT * FROM ACCOUNTS;
++------------+-------------+----------------+--------------+----------+----------+--------+---------------------+
+| account_id | customer_id | account_number | account_type | currency | balance  | status | created_at          |
++------------+-------------+----------------+--------------+----------+----------+--------+---------------------+
+|        101 |        1001 | Account_1      | savings      | INR      | 20000.43 | active | 2025-12-08 17:06:30 |
+|        102 |        1002 | Account_2      | checking     | USD      | 31233.33 | closed | 2024-12-11 19:20:34 |
+|        103 |        1003 | Account_3      | credit       | EUR      | 40233.43 | frozen | 2023-11-01 18:17:17 |
++------------+-------------+----------------+--------------+----------+----------+--------+---------------------+
+3 rows in set (0.010 sec)
+
+
+mysql> INSERT INTO transactions VALUES(50001,101,'WITHDRAWN',54000,'KOLKATA');
+Query OK, 1 row affected (0.069 sec)
+
+mysql> INSERT INTO transactions VALUES(50002,102,'DEPOSITED',35000,'MUMBAI');
+Query OK, 1 row affected (0.054 sec)
+
+mysql> SELECT * FROM TRANSACTIONS;
++--------+------------+-----------+--------+----------+
+| txn_id | account_id | txn_type  | amount | location |
++--------+------------+-----------+--------+----------+
+|  50001 |        101 | WITHDRAWN |  54000 | KOLKATA  |
+|  50002 |        102 | DEPOSITED |  35000 | MUMBAI   |
++--------+------------+-----------+--------+----------+
+2 rows in set (0.007 sec)
+
+mysql> INSERT INTO fraud_alerts VALUES(123 , 50001 , 'TEXT_ALERT' , 76);
+Query OK, 1 row affected (0.063 sec)
+
+mysql> INSERT INTO fraud_alerts VALUES(345 , 50002 , 'SMS_ALERT' , 86);
+Query OK, 1 row affected (0.035 sec)
+  
+mysql> SELECT * FROM fraud_alerts;
++----------+--------+------------+------------+
+| alert_id | txn_id | alert_type | risk_score |
++----------+--------+------------+------------+
+|      123 |  50001 | TEXT_ALERT |         76 |
+|      345 |  50002 | SMS_ALERT  |         86 |
++----------+--------+------------+------------+
+2 rows in set (0.014 sec)
+
+
+#Sudden Large Transaction
+  
+
+mysql> SELECT txn_id , 'TEXT_ALERT'  , 86
+    -> FROM TRANSACTIONS
+    -> WHERE amount > 20000;
++--------+------------+----+
+| txn_id | TEXT_ALERT | 86 |
++--------+------------+----+
+|  50001 | TEXT_ALERT | 86 |
+|  50002 | TEXT_ALERT | 86 |
++--------+------------+----+
+
+2 rows in set (0.024 sec)
+
+
+#Unusual Location
+  
+mysql> SELECT txn_id , 'UNUSUAL LOCATION' , 76
+    -> FROM TRANSACTIONS
+    -> WHERE LOCATION NOT IN ('MUMBAI','CHENNAI','DELHI');
++--------+---------------------+----+
+| txn_id | UNUSUAL LOCATION    | 76 |
++--------+---------------------+----+
+|  50001 | UNUSUAL LOCATION    | 76 |
++--------+---------------------+----+
+1 row in set (0.015 sec)
+
+
+#Fraud Summary Report
+
+mysql> SELECT f.risk_score , f.alert_type , c.fullname , c.email , a.account_number , a.currency , t.amount , t.location FROM  fraud_alerts f JOIN TRANSACTIONS t ON f.txn_id = t.txn_id JOIN ACCOUNTS a ON a.account_id = t.account_id JOIN CUSTOMERS c ON c.customer_id = a.customer_id ORDER BY f.risk_score DESC;
++------------+------------+---------------+------------------------+----------------+----------+--------+----------+
+| risk_score | alert_type | fullname      | email                  | account_number | currency | amount | location |
++------------+------------+---------------+------------------------+----------------+----------+--------+----------+
+|         86 | SMS_ALERT  | JASMINE SINGH | jasminesingh@gmail.com | Account_2      | USD      |  35000 | MUMBAI   |
+|         76 | TEXT_ALERT | DIVYA RANA    | divyarana@gmail.com    | Account_1      | INR      |  54000 | KOLKATA  |
++------------+------------+---------------+------------------------+----------------+----------+--------+----------+
+
+
